@@ -664,9 +664,9 @@ void apply_filters(const Chain &chainer, const std::string& matname) {
                                   ).Dev() *
                                  configure::dumpoutput[t][i][0] +
                                 log(2.0) /
-                                uhalflife.Real()
-                                * configure::dumpoutput[t][i][1]) *
+                                uhalflife.Real() *
                                 uenergy.Real() *
+                                configure::dumpoutput[t][i][1]) *
                                 1.e+24 * 1.e-6;
                 } // for with if
             }

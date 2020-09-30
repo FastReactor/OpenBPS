@@ -19,6 +19,6 @@
   <epb>1.e-3</epb>
   <decaykey>false</decaykey>
   <uncertanties>false</uncertanties>
-  <decay_print>true</decay_print>
+  <decay_print>false</decay_print>
   <cram_order>16</cram_order>
 </configure>
