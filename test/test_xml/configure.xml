@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<configure>
+  <chain>./test/test_xml/chain_simple.xml</chain>
+  <numbers>30</numbers>
+  <timestep>30</timestep>
+</configure>

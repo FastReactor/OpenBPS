@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<materials>
+  <material name="u235" volume="1.0" mass="1.0" power="1.0">
+    <namenuclides>U235</namenuclides>
+    <conc>1.00000</conc>
+  </material>
+</materials>

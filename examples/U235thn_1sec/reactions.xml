@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<compositions>
+  <composit name="u235">
+    <energy ng="4">0.0252 2.15 1000.0 800000.0 20000000.0</energy>
+    <energy ng="1">0.0252 20000000.0</energy>
+    <xslibs ng="1" typex="rxs">
+      <xslib name="U235" ng="1" reaction="fission">1.7528e+16</xslib>
+      <xslib name="Pu239" ng="1" reaction="fission">2.9496e+15</xslib>
+    </xslibs>
+    <flux ng="4">1.0 0.0 0.0 0.0</flux>
+    <dflux ng="4">0.1 0.0 0.0 0.0</dflux>
+  </composit>
+</compositions>

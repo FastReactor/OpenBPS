@@ -1,0 +1,17 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: list
+      run: ls
+    - name: Download gtest and create build directory
+      run: ./test/test.sh
+    - name: Run test!
+      run: ./build/bin/o_tst
