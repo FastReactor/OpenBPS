@@ -232,22 +232,7 @@ Chain read_chain_xml(const std::string& filename) {
     pugi::xml_node chain_node = doc.child("depletion_chain");
 
     Chain chainer(chain_node);
-    /*std::vector<std::pair<int, std::string>> out{chainer.form_idx_name()};
-    std::vector<std::pair<int, double>> out2{chainer.form_idx_lambda()};
-    //std::vector<std::tuple<int, int, double>> out3{chainer.form_idx_decay()};
-    auto react_map = chainer.form_reaction();
-    for(int i = 0; i < react_map["(n,gamma)"].size(); i++)
-    {
-        std::cout << react_map["(n,gamma)"][i].first << "  " << react_map["(n,gamma)"][i].second << "  "<< 1 << "  " <<std::endl;
-    }
-    auto map = chainer.form_yield_map();
-    for(int i = 0; i < map[2.53000e-02].size(); i++)
-    {
-        std::cout << std::get<0>(map[2.53000e-02][i]) << "  "
-        << std::get<1>(map[2.53000e-02][i]) << "  "<< std::get<2>(map[2.53000e-02][i]) << "  " <<std::endl;
-    }
-    auto out4 {chainer.get_yield_map(8, "Xe135")};
-    int i{0};*/
+    
     return chainer;
 }
 
