@@ -1,17 +1,4 @@
 #include <iostream>
-#include <vector>
-#include "openbps/nuclide.h"
-#include "openbps/chain.h"
-#include "openbps/uncertainty.h"
-#include "openbps/configure.h"
-#include "openbps/materials.h"
-#include "openbps/reactions.h"
-#include "openbps/functionals.h"
-#include "openbps/matrix.h"
-#include "openbps/timeproc.h"
-#include "openbps/executer.h"
-#include "xtensor/xarray.hpp"
-#include <initializer_list>
 using namespace std;
 
 int main(int argc, char* argv[])
