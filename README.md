@@ -89,13 +89,13 @@ tag **epb** : double the accuracy of iteration calculation
 tag **cram_order** : int {16, 48} order of CRAM
 
 ### Run
-After successfull installation user can run OpenBPS from directory containing config.xml.
+After successfull installation user can run OpenBPS from console from directory containing config.xml.
 For example:
 ``` bash
     ./build/bin/openbps
 ```
 **Output** could be presented in form xml file if tag **outmaterials** is pointed out in configure.xml or 
-activity and decay heat with uncertanties could be write by **decay_print** _true_ key.
+activity and decay heat with uncertanties could be write by **decay_print** _true_ key in file outlog.csv.
 
 ## Theory
    
