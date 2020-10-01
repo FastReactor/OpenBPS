@@ -62,7 +62,8 @@ public:
     // cout << u1
     friend std::ostream& operator<< (std::ostream& out,
                                      const Uncertainty& u1) {
-        out << u1.real << " +/- " << u1.dev;}
+        out << u1.real << " +/- " << u1.dev;
+        return out;}
     // >> u1
     friend std::istream& operator>> (std::istream& is,
                                       Uncertainty& u1) {

@@ -117,8 +117,9 @@ public:
     //!
     //! The indexing operator [][]
     T* operator [] (int i) {
-        if (i < nrows_)
-            return data_[i];
+        if (i >= nrows_)
+            return nullptr;
+        return data_[i];
     }
     //! M1 | M2
     const BaseMatrix& operator |(const BaseMatrix& M2) {
@@ -161,6 +162,7 @@ public:
                     << m1.data_[i][j] << "   ";
             out << std::endl;
         }
+        return out;
     }
 
     //==========================================================================

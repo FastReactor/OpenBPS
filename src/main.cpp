@@ -1,4 +1,7 @@
 #include <iostream>
+#include "openbps/timeproc.h"
+#include "openbps/configure.h"
+#include "openbps/executer.h"
 using namespace std;
 
 int main(int argc, char* argv[])
