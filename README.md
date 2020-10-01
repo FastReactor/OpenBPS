@@ -1,6 +1,5 @@
 # OpenBPS
 Open source code of BurnuP Simulation
-# OpenBPS
 ## Overview
 The OpenBPS is open source code is developing to solve wide range problems with nuclide concetration changed over time of modelling process including as simulation
 with induced external partical source like depletion, transmutation, activation (e.g. by neutrons in a nuclear reactor) well as simple nucleus decay. The code implments three main approaches to solve Baetmans equation:
