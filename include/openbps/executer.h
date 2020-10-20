@@ -6,6 +6,7 @@
 #include "xtensor/xcomplex.hpp"
 #include "xtensor/xbuilder.hpp"
 #include "configure.h"
+#include "matrix.h"
 #include "chain.h"
 
 namespace openbps {
@@ -43,6 +44,7 @@ void run_solver();
 //!
 void init_solver();
 
+void executethr(int imat, Chain& chain, DecayMatrix& dm, DecayMatrix& ddm);
 //! Iterative method implementation v.1.
 //! Method based on algorythm described at paper Seleznev E.F., Belov A.A.,
 //! Belousov V.I., Chernova I.S. "BPSD CODE UPGRADE FOR SOLVING
