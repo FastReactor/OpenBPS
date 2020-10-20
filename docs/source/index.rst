@@ -21,7 +21,6 @@ The code implements three main approaches to solve Baetman's equation:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    install.rst
    theory/index
