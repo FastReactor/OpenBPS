@@ -8,7 +8,7 @@ Total availiable amount of nuclides with cross-section data are restricted
 especially for neutron induced depletion with a large amout of fission products.
 But for calcualtion with a number of materials when cross-section data 
 are repeated is more comfortable to store arrays in independent libriaries.
-Description of externals paths are provided in :ref:`_configuration` in the 
+Description of externals paths are provided in :ref:`configuration` in the 
 section ``<impxslibs>``. Number of external :ref:`libraries <xslib_xml>` are not
 restricted:
 
