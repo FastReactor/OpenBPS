@@ -117,9 +117,8 @@ public:
     //!
     //! The indexing operator [][]
     T* operator [] (int i) {
-        if (i >= nrows_)
-            return nullptr;
-        return data_[i];
+        if (i < nrows_)
+            return data_[i];
     }
     //! M1 | M2
     const BaseMatrix& operator |(const BaseMatrix& M2) {
@@ -162,7 +161,6 @@ public:
                     << m1.data_[i][j] << "   ";
             out << std::endl;
         }
-        return out;
     }
 
     //==========================================================================
@@ -342,6 +340,14 @@ public:
     //!\return result a matrix with all transition for the material
     xt::xarray<double> matrixreal(Chain& chain,
                                   const Materials& mat);
+
+    //! Form a deviation decay nuclide matrix for unceratanties analysis
+    //!
+    //!\param[in] chain with decay information and fill the data storage
+    //!\param[in] material with nuclear concentration
+    //!\return result a matrix with all transition for the material
+    xt::xarray<double> matrixdev(Chain& chain,
+                                 const Materials& mat);
 }; //class ChebyshevMatrix
 
 //==============================================================================

@@ -193,8 +193,28 @@ void run_solver() {
             CramMatrix cm(dm);
             auto matrix = cm.matrixreal(chain, *mat);
             if (configure::order == 8) {
+                std::vector<std::size_t> shape = {y.size()};
+                xt::xarray<double> dy2  = xt::zeros<double>(shape);
+                
                 cram(matrix, y, alpha16, theta16,
                      configure::order, alpha160);
+                if (configure::uncertantie_mod) {
+                    configure::outwrite = false;
+                    
+                    CramMatrix devcm(ddm);
+                    dy = make_concentration(chain, mat->namenuclides,
+                                        mat->conc, true);
+                    auto dmatrix = devcm.matrixdev(chain, *mat);
+                    cram(matrix, dy, alpha16, theta16,
+                     configure::order, alpha160);
+                    
+                    std::copy(y.begin(), y.end(), dy2.begin());
+                    cram(dmatrix, dy2, alpha16, theta16,
+                     configure::order, alpha160);
+                    dy = dy + xt::abs(y - dy2);
+                    configure::outwrite = true;
+                    
+                }
             } else {
                 cram(matrix, y, alpha48, theta48,
                      configure::order, alpha480);
