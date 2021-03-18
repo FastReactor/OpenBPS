@@ -268,8 +268,10 @@ if __name__ == '__main__':
     targetdir = sys.argv[-1]
     execdir = os.path.join(targetdir, "proceed")
     if (_MOD == "endfb"):
+    #Parsing ENDFB file structure lib
         nucls, paths = parse_endfblib(libdir)
     else:
+    #Parsing TENDL file structure lib
         nucls, paths = parse_tendlib(libdir)
     if (len(nuclidlist) == 0):
         nuclidlist = nucls
