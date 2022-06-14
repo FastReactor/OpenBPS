@@ -71,6 +71,9 @@ int parse_command_line(int argc, char* argv[])
             if (arg == "-i" || arg == "--input") {
                 path_input = "";
             }
+            if (arg == "-v" || arg == "--verbose") {
+                verbose = true;
+            }
             if (arg == "-o" || arg == "--output") {
                 configure::outwrite = true;
             }

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<configure>
+  <chain>./examples/chain_endfb71.xml</chain>
+  <nuclides>./examples/nuclides.xml</nuclides>
+  <impxslibs>
+    <impxslib>./examples/XMAS172.xml</impxslib>
+  </impxslibs>
+  <inpmaterials>./examples/U235thn_1sec/materialso.xml</inpmaterials>
+  <reaction>./examples/U235thn_1sec/reactions.xml</reaction>
+  <outmaterials>./examples/U235thn_1sec/materialso1.xml</outmaterials>
+  <filters>
+    <filter type="exnuclide">U238 U239 U235 Pu238 Pu239 Pu240 Pu241 Pu242 Am241 Am242_m1</filter>
+  </filters>
+  <numbers>10</numbers>
+  <timestep>1</timestep>
+  <!-- IT IS  equivalent time description
+   timerecord year="0" month="0" day="0.0" hour="0" minute="0" second="1"/-->
+  <method>chebyshev</method>  
+  <epb>1.e-3</epb>
+  <decaykey>false</decaykey>
+  <uncertanties>true</uncertanties>
+  <decay_print>true</decay_print>
+  <cram_order>16</cram_order>
+</configure>

@@ -85,6 +85,8 @@ message(STATUS "C++ flags: ${cxxflags}")
 #===============================================================================
 # Setup process
 #===============================================================================
+#Linking with thread library
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread -lrt")
 
 list(APPEND lib_SOURCES
       "src/chain.cpp"

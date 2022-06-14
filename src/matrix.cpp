@@ -379,6 +379,81 @@ xt::xarray<double> CramMatrix::matrixreal(Chain& chain,
     return result;
 }
 
+//! Form a deviation decay nuclide matrix for unceratanties analysis
+xt::xarray<double> CramMatrix::matrixdev(Chain& chain,
+                                           const Materials& mat) {
+    // Variables for calculation fissiop product yields by spectrum
+    std::pair<std::vector<double>, std::vector<double>> pair2;
+    std::vector<double> weight;
+    size_t k {0};
+    //
+    size_t NN {chain.name_idx.size()}; //!< Nuclide number
+    std::vector<std::size_t> shape = { NN, NN };
+    xt::xarray<double> result(shape, 0.0);
+    for (size_t i = 0; i < NN; i++) {
+        std::copy(&this->data_[i][0], &this->data_[i][NN],
+                  (result.begin() + i * NN));
+    }
+    int icompos {mat.numcomposition};
+    if (icompos > -1) {
+        // Get neutron flux - energy value descretization
+        pair2 = compositions[icompos]->get_fluxenergy();
+        for (auto it = chain.name_idx.begin();
+             it != chain.name_idx.end(); it++) {
+            size_t inucl = it->second; // from nuclide
+            size_t i = chain.get_nuclide_index(it->first);
+            // For xslib
+            for (auto& obj : compositions[icompos]->xslib) {
+            // If cross section presented for nuclides
+            if (obj.xsname == it->first) {
+                double rr {0.0};
+                // Sum reaction-rates over energy group
+                for (auto& r: obj.rxs)
+                    rr += r.Dev();
+                // Iterate over chain nuclides transition
+                for (auto& r : nuclides[inucl]->get_reactions()) {
+                    // If match
+                    if (r.first == obj.xstype) {
+                        if (obj.xstype != "fission") {
+                            // And non-fission then add
+                            size_t k = chain.get_nuclide_index(r.second);
+                            result(k, i) += rr * PWD * mat.normpower;
+                        } else {
+                            // Considering fission reaction by energy separately
+                            std::vector<double> energies =
+                                    nuclides[inucl]->get_nfy_energies();
+                            // Fission yields by product
+                            for (auto& item: nuclides[inucl]->
+                                     get_yield_product()) {
+                                k = chain.get_nuclide_index(item.first);
+                                double br {0.0};
+                                double norm {0.0};
+                                if (weight.empty())
+                                    weight = transition(pair2.first,
+                                                        pair2.second,
+                                                        energies);
+                                    for (int l = 0; l < weight.size(); l++) {
+                                         br += weight[l] * item.second[l];
+                                         norm += weight[l];
+                                    } // for weight
+
+                                    result(k, i) += br / norm * rr * PWD *
+                                                   mat.normpower;
+                                    norm = 1.0;
+                            } // for product
+                            weight.clear();
+                        } // fission yields
+                    } // if reaction = chain.reaction
+                } // run over reaction
+                result(i, i) -= rr * PWD * mat.normpower;
+            } // if nuclide is in crossection data and chain
+        } // for xslib in composition
+    } // if composition is presented
+    } // for all nuclides
+
+    return result;
+}
+
 //==============================================================================
 // Non class methods
 //==============================================================================

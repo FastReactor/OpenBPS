@@ -1,5 +1,6 @@
 #include "openbps/executer.h"
 #include <vector>
+#include <thread>
 #include <cmath>
 #include <iostream>
 #include <fstream>
@@ -138,22 +139,13 @@ void init_solver() {
     }
 }
 
-//! Run a calculation process
-void run_solver() {
-    bool isMaterial {false};
-    if (configure::verbose)
-        std::cout << "We start execution\n";
-    // Read a chain from xml file
-    Chain chain = read_chain_xml(configure::chain_file);
-    // Form a calculation matrix
-    DecayMatrix dm(chain.name_idx.size());
-    dm.form_matrixreal(chain);
-    DecayMatrix ddm(chain.name_idx.size());
-    ddm.form_matrixdev(chain);
+void executethr(int imat, Chain& chain, DecayMatrix& dm, DecayMatrix& ddm) {
+    //std::vector<std::unique_ptr<Materials>>::iterator mat = materials.begin() + imat;
+//    auto mat = materials[imat];
     xt::xarray<double> dy;
-    for (auto& mat : materials) {
-        xt::xarray<double> y =
-                make_concentration(chain, mat->namenuclides, mat->conc);
+    bool isMaterial {false};
+    xt::xarray<double> y =
+                make_concentration(chain, materials[imat]->namenuclides, materials[imat]->conc);
         // Prepare dump to store every step of calculation results
         if (configure::outwrite) {
             configure::dumpoutput.clear();
@@ -171,15 +163,15 @@ void run_solver() {
         case Mode::iteration:
         {
             IterMatrix im(dm);
-            auto matrix = im.matrixreal(chain, *mat);
-            auto sigp = im.sigp(chain, *mat);
+            auto matrix = im.matrixreal(chain, *materials[imat]);
+            auto sigp = im.sigp(chain, *materials[imat]);
             // Perform calculation with uncertanties analysis
             if (configure::uncertantie_mod) {
-                dy = make_concentration(chain, mat->namenuclides,
-                                        mat->conc, true);
+                dy = make_concentration(chain,materials[imat]->namenuclides,
+                                        materials[imat]->conc, true);
                 IterMatrix imim(ddm);
-                auto dmatrix = imim.matrixdev(chain, *mat);
-                auto dsigp = imim.dsigp(chain, *mat);
+                auto dmatrix = imim.matrixdev(chain, *materials[imat]);
+                auto dsigp = imim.dsigp(chain, *materials[imat]);
                 iterative(matrix, sigp, y,
                           dmatrix, dsigp, dy);
             } else {
@@ -191,10 +183,30 @@ void run_solver() {
         case Mode::chebyshev:
         {
             CramMatrix cm(dm);
-            auto matrix = cm.matrixreal(chain, *mat);
+            auto matrix = cm.matrixreal(chain, *materials[imat]);
             if (configure::order == 8) {
+                std::vector<std::size_t> shape = {y.size()};
+                xt::xarray<double> dy2  = xt::zeros<double>(shape);
+                
                 cram(matrix, y, alpha16, theta16,
                      configure::order, alpha160);
+                if (configure::uncertantie_mod) {
+                    configure::outwrite = false;
+                    
+                    CramMatrix devcm(ddm);
+                    dy = make_concentration(chain, materials[imat]->namenuclides,
+                                        materials[imat]->conc, true);
+                    auto dmatrix = devcm.matrixdev(chain, *materials[imat]);
+                    cram(matrix, dy, alpha16, theta16,
+                     configure::order, alpha160);
+                    
+                    std::copy(y.begin(), y.end(), dy2.begin());
+                    cram(dmatrix, dy2, alpha16, theta16,
+                     configure::order, alpha160);
+                    dy = dy + xt::abs(y - dy2);
+                    configure::outwrite = true;
+                    
+                }
             } else {
                 cram(matrix, y, alpha48, theta48,
                      configure::order, alpha480);
@@ -209,9 +221,9 @@ void run_solver() {
                              dy[j]<< std::endl;
             if (configure::rewrite) {
                 if (configure::uncertantie_mod) {
-                    mat->add_nuclide(item.first, udouble(y[j], dy[j]));
+                    materials[imat]->add_nuclide(item.first, udouble(y[j], dy[j]));
                 } else {
-                    mat->add_nuclide(item.first, y[j]);
+                    materials[imat]->add_nuclide(item.first, y[j]);
                 }
             }
             j++;
@@ -221,14 +233,37 @@ void run_solver() {
             // If materials fitler is present
             // then applying it
             if (materialfilter != nullptr) {
-                materialfilter->apply(mat->Name(), isMaterial);
+                materialfilter->apply(materials[imat]->Name(), isMaterial);
             } else {
                 isMaterial = true;
             }
             if (isMaterial)
-                apply_filters(chain, mat->Name());
+                apply_filters(chain, materials[imat]->Name());
          }
-    }//for materials
+}
+
+//! Run a calculation process
+void run_solver() {
+    bool isMaterial {false};
+    if (configure::verbose)
+        std::cout << "We start execution\n";
+    // Read a chain from xml file
+    Chain chain = read_chain_xml(configure::chain_file);
+    // Form a calculation matrix
+    DecayMatrix dm(chain.name_idx.size());
+    dm.form_matrixreal(chain);
+    DecayMatrix ddm(chain.name_idx.size());
+    ddm.form_matrixdev(chain);
+    std::vector<std::thread> threads;
+    for (int i = 0; i < materials.size(); i++) {
+        std::thread thr=std::thread(executethr, i, std::ref(chain), std::ref(dm), std::ref(ddm));
+        threads.emplace_back(std::move(thr));
+    }
+    for(auto& thr : threads) {
+        thr.join();
+    }
+
+    std::cout << "Done!" << std::endl;
     // Write down the getting nuclear concentration for every material
     // into *.xml file
     if (configure::rewrite)
